@@ -14,10 +14,7 @@ ui.input_selectize(
 
 # @render.plot
 @render_plotly
-#@render.text
 def hist():
-    #    from matplotlib import pyplot as plt
-#     plt.style.use('dark_background')
 
 #    choice_rssd = inst[inst["NAME"] == input.bank()]["FED_RSSD"]
     choice_rssd = inst[inst["NAME"].str.contains(str(input.bank()))]["FED_RSSD"]
@@ -25,7 +22,12 @@ def hist():
     df = pd.DataFrame(betas[choice_rssd.values[0]])
     df.columns = ["Beta"]
 
-    # betas[choice_rssd.values[0]].plot()
     fig = px.line(df, y="Beta", title='Time-Varying Deposit Beta Estimate', template='plotly_dark')
     return fig
+
+@render.table
+def table():
+    only_inst = pd.DataFrame(inst[inst["NAME"].str.contains(str(input.bank()))][["FDICREGN", "CBSA_METRO_NAME",  "CITY", "STALP", "ASSET", "EQ", "DEP", "DEPDOM", "ROA", "ROE"]])
+    only_inst.columns = ["FDIC Region", "Metro", "City", "State", "Assets", "Equity", "Deposits", "Domestic Deposits", "ROA", "ROE"]
+    return only_inst
 
